@@ -1,16 +1,19 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
+const electron = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
+function createWindow(wid,hgt) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: wid,
+    height: hgt,
+    minHeight:Math.trunc(hgt * 0.95),
+    minWidth:Math.trunc(wid * 0.75),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
@@ -34,7 +37,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready',()=> {
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  createWindow(width,height);
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
